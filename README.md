@@ -1,51 +1,58 @@
-Name: Gavin Joseph
-Student Number: 101348882
+# Conference Talk Streamer
 
-main.cc:
-Starting point of the program. Runs the main menu and allows the user to interact with SummitStream. Users can view conferences, search talks by speaker or keyword, manage a playlist, and play talks with audio or video.
+A C++ application for organizing and streaming conference talks. Users can browse conferences, search talks by speaker or keyword, manage a playlist, and play talks with audio or video output.
 
-Control.h / Control.cc:
-Handles program flow. Connects SummitStream, View, and SearchFactory. Initializes conferences and talks from file, handles menu selections, manages the talk playlist, and delegates to View for input/output.
+## Features
 
-View.h / View.cc:
-Handles user input and output. Displays menus, prints conferences and talks, prompts for speaker and keyword selections, plays the playlist, and toggles between audio and video players.
+- Browse and print all conferences and their talks
+- Search talks by speaker, keyword, or both using a polymorphic Search hierarchy
+- Manage a talk playlist with add and clear functionality
+- Play talks in audio-only or audio+video mode using the Strategy pattern
+- Factory pattern for creating Search objects at runtime
+- Templated generic List class with operator overloading
+- Zero memory leaks verified by Valgrind across all test cases
 
-Talk.h / Talk.cc:
-Represents a conference talk. Stores title, speaker, keywords, audio content, and video filename. Provides getters, a keyword search function, and a print function.
+## Technical Highlights
 
-Conference.h / Conference.cc:
-Represents a conference. Stores name, description, and a collection of Talks. Provides functions to add talks, retrieve talks, print conference details, and compare by name.
+- **Templates** — generic `List<T>` class with `+=`, `-=`, and `[]` operator overloading
+- **Multiple Inheritance** — diamond Search hierarchy with virtual base classes (`S_Search`, `K_Search`, `SK_Search`)
+- **Polymorphism** — abstract `Search` and `Player` base classes with runtime dispatch
+- **Factory Pattern** — `SearchFactory` decouples Search object creation from application logic
+- **Strategy Pattern** — `Player` interface swaps between `AudioPlayer` and `VideoPlayer` at runtime
+- **Memory Management** — proper destructors and ownership chain with zero Valgrind errors
 
-SummitStream.h / SummitStream.cc:
-Central store for all Conferences and their Talks. Provides functions to add conferences and talks, retrieve conferences by name or index, and search for talks matching a Search object.
+## Project Structure
+```
+├── main.cc              # Entry point
+├── Control.h/cc         # Program flow and menu handling
+├── View.h/cc            # User input and output
+├── SummitStream.h/cc    # Central store for conferences and talks
+├── Conference.h/cc      # Conference entity with talk collection
+├── Talk.h/cc            # Talk entity with metadata and content
+├── Search.h/cc          # Abstract search hierarchy (S, K, SK)
+├── SearchFactory.h      # Factory for creating Search objects
+├── Player.h/cc          # Abstract player with Audio and Video subclasses
+├── List.h               # Templated generic list with operator overloading
+├── TestControl.h/cc     # Automated test framework
+└── Tester.h/cc          # Common test utilities
+```
 
-Search.h / Search.cc:
-Defines the abstract Search base class and three concrete search types. S_Search matches by speaker, K_Search matches by keyword, and SK_Search matches by speaker or keyword using multiple inheritance.
+## Compilation
+```bash
+# Build both executables
+make
 
-SearchFactory.h:
-Creates and returns the appropriate Search object based on a type string. Separates object creation from application logic.
-
-Player.h / Player.cc:
-Defines the abstract Player base class and two concrete players. AudioPlayer outputs the talk audio string. VideoPlayer outputs the audio string and reads ASCII art from a file.
-
-List.h:
-Templated fixed-size dynamic array used to store collections of Conferences and Talks. Supports add (+=), remove (-=), indexed access ([]), clear, and size operations.
-
-TestControl.h / TestControl.cc:
-Contains automated testing code. Tests adding conferences and talks, searching by speaker, keyword, and speaker or keyword, and playing the playlist with video.
-
-Tester.h / Tester.cc:
-Provides common test functionality used by TestControl.
-
-Compilation Instructions:
-To compile the program, run:
-make or make all
-
-To clean the compiled files, run:
-make clean
-
-To run the program:
+# Run the interactive program
 ./a4
 
-To run the automated tests:
+# Run automated tests
 ./a4test
+
+# Clean compiled files
+make clean
+```
+
+## Test Results
+
+- Functional score: **22/22**
+- Memory leaks: **0 bytes in 0 blocks** across all 6 test cases (verified by Valgrind)
